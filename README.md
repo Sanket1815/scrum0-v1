@@ -6,6 +6,10 @@ Powered by an intelligent AI agent, the platform understands the context of disc
 
 ---
 
+# Cheatsheet to create the framework
+
+https://www.notion.so/Scrum0-dev-Cheat-Sheet-2158bf1fcbdc80edba06cd790772b928?source=copy_link
+
 # Next.js Neo-Brutalism Template
 
 A bold, unapologetic Next.js template built with neo-brutalism design principles. This production-ready template combines modern web technologies with aggressive, attention-demanding aesthetics.
