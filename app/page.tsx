@@ -1,192 +1,247 @@
 'use client';
 
 import { useState } from 'react';
-import { NeoButton } from '@/components/ui/neo-button';
-import {
-  NeoCard,
-  NeoCardContent,
-  NeoCardDescription,
-  NeoCardFooter,
-  NeoCardHeader,
-  NeoCardTitle,
-} from '@/components/ui/neo-card';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
-  Zap,
-  Rocket,
+  Clock,
   Shield,
-  Database,
-  Code,
-  Palette,
-  Star,
+  Video,
+  MessageSquare,
   ArrowRight,
+  Menu,
+  X,
+  Github,
+  ExternalLink,
 } from 'lucide-react';
-import { logger } from '@/lib/logger';
-import { toast } from 'sonner';
+import Link from 'next/link';
 
-export default function Home() {
-  const [email, setEmail] = useState('');
-
-  const handleGetStarted = () => {
-    if (!email) {
-      toast.error('Please enter your email!');
-      return;
-    }
-    logger.info('User initiated signup', { email });
-    toast.success('Welcome to the brutalist revolution!');
-  };
+export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const features = [
     {
-      icon: Zap,
-      title: 'Lightning Fast',
-      description: 'Built with Next.js 14+ for maximum performance',
-      color: 'bg-yellow-400',
-    },
-    {
       icon: Shield,
-      title: 'Rock Solid',
-      description: 'TypeScript, ESLint, and Prettier for bulletproof code',
-      color: 'bg-red-400',
+      title: 'Authentication & Team Invites',
+      description: 'Secure team management with role-based access control.',
+      emoji: '🔐',
     },
     {
-      icon: Database,
-      title: 'Supabase Ready',
-      description: 'Complete backend integration out of the box',
-      color: 'bg-blue-400',
+      icon: Clock,
+      title: 'Scrum Meeting Management',
+      description: 'Streamlined daily standups and sprint planning workflows.',
+      emoji: '🕑',
     },
     {
-      icon: Palette,
-      title: 'Neo-Brutalist',
-      description: 'Bold, unapologetic design that demands attention',
-      color: 'bg-green-400',
+      icon: Video,
+      title: 'Zoom & AI Transcription',
+      description: 'Automatic meeting transcription and intelligent insights.',
+      emoji: '🎥',
+    },
+    {
+      icon: MessageSquare,
+      title: 'Slack Bot Notifications',
+      description: 'Real-time updates and notifications in your workspace.',
+      emoji: '💬',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <Badge className="mb-6 neo-border bg-yellow-400 text-black font-bold uppercase tracking-wide">
-            <Star className="w-4 h-4 mr-2" />
-            Neo-Brutalism Framework
-          </Badge>
-          
-          <h1 className="neo-header text-6xl md:text-8xl font-black mb-8 leading-tight">
-            BOLD.<br />
-            BRUTAL.<br />
-            <span className="neo-bg-yellow px-4 py-2 inline-block transform -rotate-2">
-              BEAUTIFUL.
-            </span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl font-semibold text-gray-800 mb-12 max-w-3xl mx-auto">
-            The most aggressive, production-ready Next.js template ever created.
-            No compromise. No subtlety. Just pure, unfiltered web excellence.
-          </p>
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="border-b-4 border-yellow-400 bg-white">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-black border-2 border-black flex items-center justify-center">
+                <span className="text-white font-bold text-sm">S0</span>
+              </div>
+              <span className="text-2xl font-bold text-black">scrum0.dev</span>
+            </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto mb-8">
-            <Input
-              type="email"
-              placeholder="YOUR@EMAIL.COM"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="neo-input text-center font-bold uppercase"
-            />
-            <NeoButton 
-              onClick={handleGetStarted}
-              size="lg"
-              className="w-full sm:w-auto"
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link href="#features" className="text-black font-medium hover:text-gray-600 transition-colors">
+                Features
+              </Link>
+              <Link href="#about" className="text-black font-medium hover:text-gray-600 transition-colors">
+                About
+              </Link>
+              <Button variant="outline" className="border-2 border-black hover:bg-gray-100">
+                Login
+              </Button>
+            </nav>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 border-2 border-black bg-white hover:bg-gray-100"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              GET STARTED
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </NeoButton>
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <nav className="md:hidden mt-4 pt-4 border-t-2 border-gray-200">
+              <div className="flex flex-col space-y-4">
+                <Link href="#features" className="text-black font-medium">
+                  Features
+                </Link>
+                <Link href="#about" className="text-black font-medium">
+                  About
+                </Link>
+                <Button variant="outline" className="border-2 border-black w-fit">
+                  Login
+                </Button>
+              </div>
+            </nav>
+          )}
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <Badge className="mb-6 bg-yellow-400 text-black border-2 border-black font-bold uppercase tracking-wide hover:bg-yellow-300">
+              AI-Powered Productivity
+            </Badge>
+            
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-black mb-6 leading-tight">
+              AI-First Scrum<br />
+              Management for<br />
+              <span className="bg-yellow-400 px-4 py-2 inline-block border-4 border-black transform -rotate-1">
+                Modern Teams
+              </span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto font-medium">
+              Automate updates, extract insights, and save time with intelligent 
+              Scrum management that understands your team's workflow.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button 
+                size="lg" 
+                className="bg-yellow-400 hover:bg-yellow-300 text-black border-4 border-black font-bold uppercase tracking-wide text-lg px-8 py-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              >
+                Get Started
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="border-4 border-black font-bold uppercase tracking-wide text-lg px-8 py-4 hover:bg-gray-100"
+              >
+                Watch Demo
+              </Button>
+            </div>
+
+            {/* Hero Visual Element */}
+            <div className="mt-16 relative">
+              <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto opacity-20">
+                {[...Array(9)].map((_, i) => (
+                  <div 
+                    key={i} 
+                    className="aspect-square border-2 border-black bg-gray-100"
+                  />
+                ))}
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-32 h-32 bg-yellow-400 border-4 border-black flex items-center justify-center transform rotate-12">
+                  <span className="text-4xl font-black text-black transform -rotate-12">S0</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          {features.map((feature, index) => {
-            const IconComponent = feature.icon;
-            return (
-              <NeoCard key={index} hoverable className="text-center">
-                <NeoCardHeader>
-                  <div className={`w-16 h-16 ${feature.color} neo-border mx-auto mb-4 flex items-center justify-center`}>
-                    <IconComponent className="w-8 h-8 text-black" />
-                  </div>
-                  <NeoCardTitle className="text-xl">{feature.title}</NeoCardTitle>
-                </NeoCardHeader>
-                <NeoCardContent>
-                  <NeoCardDescription className="font-medium">
-                    {feature.description}
-                  </NeoCardDescription>
-                </NeoCardContent>
-              </NeoCard>
-            );
-          })}
+      {/* Feature Highlights */}
+      <section id="features" className="py-16 bg-gray-50 border-t-4 border-black">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black text-black mb-4 uppercase">
+              Core Features
+            </h2>
+            <p className="text-xl text-gray-700 max-w-2xl mx-auto">
+              Everything you need to run efficient, automated Scrum processes
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => {
+              const IconComponent = feature.icon;
+              return (
+                <Card 
+                  key={index} 
+                  className="border-4 border-black bg-white hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-2 hover:-translate-y-2 transition-all duration-200"
+                >
+                  <CardHeader className="text-center pb-4">
+                    <div className="w-16 h-16 bg-yellow-400 border-4 border-black mx-auto mb-4 flex items-center justify-center">
+                      <span className="text-2xl">{feature.emoji}</span>
+                    </div>
+                    <CardTitle className="text-xl font-bold text-black uppercase tracking-wide">
+                      {feature.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-700 font-medium text-center">
+                      {feature.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
+      </section>
 
-        {/* Tech Stack */}
-        <NeoCard variant="yellow" className="mb-16">
-          <NeoCardHeader>
-            <NeoCardTitle className="text-center text-3xl mb-8">
-              <Code className="w-8 h-8 inline-block mr-3" />
-              TECH STACK
-            </NeoCardTitle>
-          </NeoCardHeader>
-          <NeoCardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              {[
-                'Next.js 14+',
-                'TypeScript',
-                'Tailwind CSS',
-                'Supabase',
-                'Pino Logging',
-                'ESLint',
-                'Prettier',
-                'shadcn/ui',
-              ].map((tech, index) => (
-                <div key={index} className="neo-card bg-white p-4">
-                  <span className="font-bold text-black uppercase">{tech}</span>
-                </div>
-              ))}
-            </div>
-          </NeoCardContent>
-        </NeoCard>
-
-        {/* CTA Section */}
-        <div className="text-center">
-          <NeoCard variant="white" className="max-w-2xl mx-auto">
-            <NeoCardHeader>
-              <NeoCardTitle className="text-3xl">
-                <Rocket className="w-8 h-8 inline-block mr-3" />
-                READY TO BUILD?
-              </NeoCardTitle>
-              <NeoCardDescription className="text-lg">
-                This template includes everything you need to build production-ready applications with style.
-              </NeoCardDescription>
-            </NeoCardHeader>
-            <NeoCardFooter className="justify-center gap-4">
-              <NeoButton variant="secondary" size="lg">
-                VIEW DOCS
-              </NeoButton>
-              <NeoButton size="lg">
-                START CODING
-                <Code className="w-5 h-5 ml-2" />
-              </NeoButton>
-            </NeoCardFooter>
-          </NeoCard>
+      {/* CTA Section */}
+      <section className="py-16 bg-black text-white border-t-4 border-yellow-400">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-5xl font-black mb-6 uppercase">
+            Ready to Transform Your Scrum Process?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Join teams already using AI to streamline their agile workflows
+          </p>
+          <Button 
+            size="lg"
+            className="bg-yellow-400 hover:bg-yellow-300 text-black border-4 border-yellow-400 font-bold uppercase tracking-wide text-lg px-12 py-4 shadow-[4px_4px_0px_0px_rgba(255,214,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(255,214,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+          >
+            Start Free Trial
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-black text-yellow-400 py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p className="font-bold uppercase tracking-wide">
-            Built with ❤️ and absolutely zero compromise
-          </p>
+      <footer className="bg-white border-t-4 border-black py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-4 mb-4 md:mb-0">
+              <span className="text-black font-bold">Built by your team • © 2025</span>
+            </div>
+            <div className="flex items-center space-x-6">
+              <Link 
+                href="#" 
+                className="text-black hover:text-gray-600 transition-colors flex items-center space-x-2"
+              >
+                <Github className="w-5 h-5" />
+                <span className="font-medium">GitHub</span>
+              </Link>
+              <Link 
+                href="#" 
+                className="text-black hover:text-gray-600 transition-colors flex items-center space-x-2"
+              >
+                <ExternalLink className="w-5 h-5" />
+                <span className="font-medium">Privacy</span>
+              </Link>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
