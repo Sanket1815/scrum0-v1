@@ -14,6 +14,7 @@ import {
   X,
   Github,
   ExternalLink,
+  Zap,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -100,6 +101,61 @@ export default function LandingPage() {
           )}
         </div>
       </header>
+
+      {/* Hero Section */}
+      <section className="py-20 bg-white border-b-4 border-black">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <Badge className="mb-8 bg-yellow-400 text-black border-2 border-black font-bold uppercase tracking-wide text-sm px-4 py-2">
+              <Zap className="w-4 h-4 mr-2" />
+              AI-Powered Scrum Management
+            </Badge>
+            
+            <h1 className="text-4xl md:text-7xl font-black text-black mb-8 leading-tight uppercase">
+              AI-First Scrum<br />
+              Management for<br />
+              <span className="bg-yellow-400 px-4 py-2 inline-block border-4 border-black transform -rotate-1">
+                Modern Teams
+              </span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-12 max-w-3xl mx-auto">
+              Automate updates, extract insights, and save time with intelligent 
+              Scrum management that actually works.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <Button 
+                size="lg"
+                className="bg-yellow-400 hover:bg-yellow-300 text-black border-4 border-black font-bold uppercase tracking-wide text-lg px-12 py-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
+              >
+                Get Started
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              
+              <Button 
+                variant="outline"
+                size="lg"
+                className="border-4 border-black bg-white hover:bg-gray-100 text-black font-bold uppercase tracking-wide text-lg px-12 py-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
+              >
+                Watch Demo
+              </Button>
+            </div>
+
+            {/* Geometric Pattern */}
+            <div className="mt-16 grid grid-cols-3 md:grid-cols-5 gap-4 max-w-2xl mx-auto opacity-20">
+              {[...Array(15)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`aspect-square border-2 border-black ${
+                    i % 3 === 0 ? 'bg-yellow-400' : i % 2 === 0 ? 'bg-gray-200' : 'bg-white'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Feature Highlights */}
       <section id="features" className="py-16 bg-gray-50 border-t-4 border-black">
