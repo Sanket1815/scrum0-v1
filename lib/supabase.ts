@@ -23,14 +23,51 @@ export const supabase = createClient(
 export const supabaseClient = {
   // Auth helpers
   auth: {
-    signUp: async (email: string, password: string) => {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-      if (error) logger.error('Supabase signUp error:', error);
-      return { data, error };
+    // signUp: async (email: string, password: string) => {
+    //   const { data, error } = await supabase.auth.signUp({
+    //     email,
+    //     password,
+    //   });
+    //   if (error) logger.error('Supabase signUp error:', error);
+    //   return { data, error };
+    // },
+    signUp: async (email: string, password: string, username: string, fullName?: string) => {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        username,
+        full_name: fullName || '',
+      },
     },
+  });
+
+  if (error) {
+    logger.error('Supabase signUp error:', error);
+    return { data: null, error };
+  }
+
+  const user = data?.user;
+
+  if (user) {
+    const { error: insertError } = await supabase
+      .from('profiles') // Replace with your actual table name
+      .insert({
+        id: user.id,
+        email: user.email,
+        username,
+        full_name: fullName || '',
+      });
+
+    if (insertError) {
+      logger.error('Failed to insert profile after sign up:', insertError);
+      return { data: null, error: insertError };
+    }
+  }
+
+  return { data, error: null };
+}
     
     signIn: async (email: string, password: string) => {
       const { data, error } = await supabase.auth.signInWithPassword({
