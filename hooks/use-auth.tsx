@@ -37,6 +37,24 @@ export const useAuthState = () => {
 
   const fetchUserProfile = async (supabaseUser: SupabaseUser) => {
     try {
+      // Check if Supabase is properly configured
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+        logger.warn('Supabase not configured - using mock user');
+        setAuthState({
+          user: {
+            id: supabaseUser.id,
+            email: supabaseUser.email || 'demo@scrum0.dev',
+            username: supabaseUser.user_metadata?.username || 'demo_user',
+            full_name: supabaseUser.user_metadata?.full_name || 'Demo User',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+          loading: false,
+          error: null,
+        });
+        return;
+      }
+
       const { profile, error } = await authService.getUserProfile(supabaseUser.id);
       
       if (error) {
@@ -79,6 +97,24 @@ export const useAuthState = () => {
   const signIn = async (email: string, password: string) => {
     setAuthState(prev => ({ ...prev, loading: true, error: null }));
     
+    // Check if Supabase is configured
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+      logger.warn('Supabase not configured - using demo mode');
+      setAuthState({
+        user: {
+          id: 'demo-user-id',
+          email: email,
+          username: email.split('@')[0],
+          full_name: 'Demo User',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        loading: false,
+        error: null,
+      });
+      return { success: true };
+    }
+
     const { data, error } = await authService.signIn(email, password);
     
     if (error) {
@@ -96,6 +132,24 @@ export const useAuthState = () => {
   const signUp = async (email: string, password: string, username: string, fullName?: string) => {
     setAuthState(prev => ({ ...prev, loading: true, error: null }));
     
+    // Check if Supabase is configured
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+      logger.warn('Supabase not configured - using demo mode');
+      setAuthState({
+        user: {
+          id: 'demo-user-id',
+          email: email,
+          username: username,
+          full_name: fullName || '',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        loading: false,
+        error: null,
+      });
+      return { success: true };
+    }
+
     const { data, error } = await authService.signUp(email, password, username, fullName);
     
     if (error) {

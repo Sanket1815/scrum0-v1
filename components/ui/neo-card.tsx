@@ -1,27 +1,45 @@
+'use client';
+
 import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-const NeoCard = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & {
-    variant?: 'default' | 'yellow' | 'white';
-    hoverable?: boolean;
-  }
->(({ className, variant = 'default', hoverable = false, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'neo-card p-6',
-      {
-        'neo-card-yellow': variant === 'yellow',
-        'bg-white': variant === 'white',
-        'neo-card-hover': hoverable,
+const neoCardVariants = cva(
+  'neo-card rounded-lg text-card-foreground',
+  {
+    variants: {
+      variant: {
+        default: 'bg-white',
+        yellow: 'neo-card-yellow',
+        white: 'bg-white',
       },
-      className
-    )}
-    {...props}
-  />
-));
+      hoverable: {
+        true: 'neo-card-hover cursor-pointer',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      hoverable: false,
+    },
+  }
+);
+
+export interface NeoCardProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof neoCardVariants> {
+  hoverable?: boolean;
+}
+
+const NeoCard = React.forwardRef<HTMLDivElement, NeoCardProps>(
+  ({ className, variant, hoverable, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(neoCardVariants({ variant, hoverable, className }))}
+      {...props}
+    />
+  )
+);
 NeoCard.displayName = 'NeoCard';
 
 const NeoCardHeader = React.forwardRef<
@@ -30,7 +48,7 @@ const NeoCardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('flex flex-col space-y-2 mb-4', className)}
+    className={cn('flex flex-col space-y-1.5 p-6', className)}
     {...props}
   />
 ));
@@ -42,7 +60,7 @@ const NeoCardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn('neo-header text-2xl font-bold leading-none', className)}
+    className={cn('neo-header text-2xl font-black leading-none tracking-tight', className)}
     {...props}
   />
 ));
@@ -54,7 +72,7 @@ const NeoCardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn('text-sm text-gray-700 font-medium', className)}
+    className={cn('text-sm font-semibold text-muted-foreground', className)}
     {...props}
   />
 ));
@@ -64,7 +82,7 @@ const NeoCardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('', className)} {...props} />
+  <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
 ));
 NeoCardContent.displayName = 'NeoCardContent';
 
@@ -74,7 +92,7 @@ const NeoCardFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('flex items-center pt-4 mt-4 border-t-2 border-black', className)}
+    className={cn('flex items-center p-6 pt-0', className)}
     {...props}
   />
 ));
@@ -87,4 +105,5 @@ export {
   NeoCardTitle,
   NeoCardDescription,
   NeoCardContent,
+  neoCardVariants,
 };

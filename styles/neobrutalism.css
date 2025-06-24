@@ -30,136 +30,135 @@ body {
   line-height: 1.5;
 }
 
+/* Brutalist buttons */
+.neo-button {
+  @apply font-bold uppercase tracking-wide;
+  border: 3px solid var(--neo-black);
+  box-shadow: var(--neo-shadow-md);
+  transition: all 0.1s ease;
+  font-family: 'Space Grotesk', sans-serif;
+  border-radius: var(--neo-radius);
+}
 
-  /* Brutalist buttons */
-  .neo-button {
-    @apply font-bold uppercase tracking-wide;
-    border: 3px solid var(--neo-black);
-    box-shadow: var(--neo-shadow-md);
-    transition: all 0.1s ease;
-    font-family: 'Space Grotesk', sans-serif;
-  }
+.neo-button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: var(--neo-shadow-sm);
+}
 
-  .neo-button:hover {
-    transform: translate(2px, 2px);
-    box-shadow: var(--neo-shadow-sm);
-  }
+.neo-button:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
 
-  .neo-button:active {
-    transform: translate(4px, 4px);
-    box-shadow: none;
-  }
+.neo-button-primary {
+  background-color: var(--neo-yellow);
+  color: var(--neo-black);
+}
 
-  .neo-button-primary {
-    background-color: var(--neo-yellow);
-    color: var(--neo-black);
-  }
+.neo-button-primary:hover {
+  background-color: var(--neo-yellow-dark);
+}
 
-  .neo-button-primary:hover {
-    background-color: var(--neo-yellow-dark);
-  }
+.neo-button-secondary {
+  background-color: var(--neo-white);
+  color: var(--neo-black);
+}
 
-  .neo-button-secondary {
-    background-color: var(--neo-white);
-    color: var(--neo-black);
-  }
+.neo-button-secondary:hover {
+  background-color: var(--neo-gray);
+}
 
-  .neo-button-secondary:hover {
-    background-color: var(--neo-gray);
-  }
+/* Brutalist cards */
+.neo-card {
+  border: 4px solid var(--neo-black);
+  box-shadow: var(--neo-shadow-lg);
+  background-color: var(--neo-white);
+  border-radius: var(--neo-radius);
+}
 
-  /* Brutalist cards */
-  .neo-card {
-    border: 4px solid var(--neo-black);
-    box-shadow: var(--neo-shadow-lg);
-    background-color: var(--neo-white);
-    border-radius: var(--neo-radius);
-  }
+.neo-card-yellow {
+  background-color: var(--neo-yellow);
+}
 
-  .neo-card-yellow {
-    background-color: var(--neo-yellow);
-  }
+.neo-card-hover {
+  transition: all 0.2s ease;
+}
 
-  .neo-card-hover {
-    transition: all 0.2s ease;
-  }
+.neo-card-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--neo-shadow-xl);
+}
 
-  .neo-card-hover:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: var(--neo-shadow-xl);
-  }
+/* Brutalist inputs */
+.neo-input {
+  border: 3px solid var(--neo-black);
+  background-color: var(--neo-white);
+  padding: 12px 16px;
+  font-weight: 500;
+  font-family: 'Space Grotesk', sans-serif;
+  border-radius: var(--neo-radius);
+}
 
-  /* Brutalist inputs */
-  .neo-input {
-    border: 3px solid var(--neo-black);
-    background-color: var(--neo-white);
-    padding: 12px 16px;
-    font-weight: 500;
-    font-family: 'Space Grotesk', sans-serif;
-    border-radius: var(--neo-radius);
-  }
+.neo-input:focus {
+  outline: none;
+  box-shadow: var(--neo-shadow-md);
+  border-color: var(--neo-yellow);
+}
 
-  .neo-input:focus {
-    outline: none;
-    box-shadow: var(--neo-shadow-md);
-    border-color: var(--neo-yellow);
-  }
+/* Headers */
+.neo-header {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--neo-black);
+}
 
-  /* Headers */
-  .neo-header {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--neo-black);
-  }
+/* Override shadcn components for neo-brutalism */
+.btn {
+  @apply neo-button;
+}
 
-  /* Override shadcn components for neo-brutalism */
-  .btn {
-    @apply neo-button;
-  }
-  
-  .btn-primary {
-    @apply neo-button-primary;
-  }
-  
-  .btn-secondary {
-    @apply neo-button-secondary;
-  }
-  
-  .card {
-    @apply neo-card;
-  }
-  
-  .input {
-    @apply neo-input;
-  }
+.btn-primary {
+  @apply neo-button-primary;
+}
 
-  /* Utility classes */
-  .neo-border {
-    border: 3px solid var(--neo-black);
-  }
+.btn-secondary {
+  @apply neo-button-secondary;
+}
 
-  .neo-border-thick {
-    border: 4px solid var(--neo-black);
-  }
+.card {
+  @apply neo-card;
+}
 
-  .neo-shadow {
-    box-shadow: var(--neo-shadow-md);
-  }
+.input {
+  @apply neo-input;
+}
 
-  .neo-shadow-lg {
-    box-shadow: var(--neo-shadow-lg);
-  }
+/* Utility classes */
+.neo-border {
+  border: 3px solid var(--neo-black);
+}
 
-  .neo-bg-yellow {
-    background-color: var(--neo-yellow);
-  }
+.neo-border-thick {
+  border: 4px solid var(--neo-black);
+}
 
-  .neo-text-black {
-    color: var(--neo-black);
-  }
+.neo-shadow {
+  box-shadow: var(--neo-shadow-md);
+}
 
+.neo-shadow-lg {
+  box-shadow: var(--neo-shadow-lg);
+}
+
+.neo-bg-yellow {
+  background-color: var(--neo-yellow);
+}
+
+.neo-text-black {
+  color: var(--neo-black);
+}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
