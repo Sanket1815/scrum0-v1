@@ -122,7 +122,7 @@ export const useAuthState = () => {
       return { success: false, error: error.message };
     }
 
-    if (data?.user) {
+    if (data && data.user) {
       await fetchUserProfile(data.user);
     }
 
