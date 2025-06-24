@@ -3,7 +3,7 @@ import { logger } from './logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
+console.log(supabaseUrl)
 if (!supabaseUrl || !supabaseKey) {
   logger.warn('Supabase environment variables not found - using placeholder values');
 }
