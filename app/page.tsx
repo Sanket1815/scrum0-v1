@@ -101,64 +101,6 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 bg-yellow-400 text-black border-2 border-black font-bold uppercase tracking-wide hover:bg-yellow-300">
-              AI-Powered Productivity
-            </Badge>
-            
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-black mb-6 leading-tight">
-              AI-First Scrum<br />
-              Management for<br />
-              <span className="bg-yellow-400 px-4 py-2 inline-block border-4 border-black transform -rotate-1">
-                Modern Teams
-              </span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto font-medium">
-              Automate updates, extract insights, and save time with intelligent 
-              Scrum management that understands your team's workflow.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button 
-                size="lg" 
-                className="bg-yellow-400 hover:bg-yellow-300 text-black border-4 border-black font-bold uppercase tracking-wide text-lg px-8 py-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-              >
-                Get Started
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="border-4 border-black font-bold uppercase tracking-wide text-lg px-8 py-4 hover:bg-gray-100"
-              >
-                Watch Demo
-              </Button>
-            </div>
-
-            {/* Hero Visual Element */}
-            <div className="mt-16 relative">
-              <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto opacity-20">
-                {[...Array(9)].map((_, i) => (
-                  <div 
-                    key={i} 
-                    className="aspect-square border-2 border-black bg-gray-100"
-                  />
-                ))}
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-32 h-32 bg-yellow-400 border-4 border-black flex items-center justify-center transform rotate-12">
-                  <span className="text-4xl font-black text-black transform -rotate-12">S0</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Feature Highlights */}
       <section id="features" className="py-16 bg-gray-50 border-t-4 border-black">
         <div className="container mx-auto px-4">
