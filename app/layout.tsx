@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Space_Grotesk } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
+import { AuthProvider } from '@/hooks/use-auth';
 import { logger } from '@/lib/logger';
 
 const spaceGrotesk = Space_Grotesk({ 
@@ -12,9 +13,9 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Neo-Brutalism App',
-  description: 'A bold, unapologetic web application built with Next.js and neo-brutalism design principles',
-  keywords: ['neo-brutalism', 'nextjs', 'react', 'design', 'bold'],
+  title: 'scrum0.dev - AI-Powered Scrum Management',
+  description: 'AI-powered productivity platform designed to centralize and automate Scrum management for modern teams',
+  keywords: ['scrum', 'agile', 'project management', 'ai', 'productivity', 'team collaboration'],
 };
 
 export default function RootLayout({
@@ -33,8 +34,10 @@ export default function RootLayout({
           forcedTheme="light"
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
