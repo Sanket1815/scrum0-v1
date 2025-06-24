@@ -143,16 +143,7 @@ export default function LandingPage() {
             </div>
 
             {/* Geometric Pattern */}
-            <div className="mt-16 grid grid-cols-3 md:grid-cols-5 gap-4 max-w-2xl mx-auto opacity-20">
-              {[...Array(15)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className={`aspect-square border-2 border-black ${
-                    i % 3 === 0 ? 'bg-yellow-400' : i % 2 === 0 ? 'bg-gray-200' : 'bg-white'
-                  }`}
-                />
-              ))}
-            </div>
+            
           </div>
         </div>
       </section>
