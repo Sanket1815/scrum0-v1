@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NeoButton } from '@/components/ui/neo-button';
 import { NeoCard, NeoCardContent, NeoCardDescription, NeoCardHeader, NeoCardTitle } from '@/components/ui/neo-card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/use-auth';
 import { toast } from 'sonner';
-import { Eye, EyeOff, User, Mail, Lock, UserPlus, LogIn } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, Lock, UserPlus, LogIn, AlertCircle, CheckCircle } from 'lucide-react';
 
 export function AuthForm() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -19,18 +19,50 @@ export function AuthForm() {
     fullName: '',
   });
 
-  const { signIn, signUp, authState } = useAuth();
+  const { signIn, signUp, authState, checkConnection } = useAuth();
+
+  // Check connection status on mount
+  useEffect(() => {
+    checkConnection();
+  }, [checkConnection]);
+
+  // Real-time form validation
+  const validateForm = () => {
+    if (!formData.email || !formData.password) {
+      return 'Email and password are required!';
+    }
+
+    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
+      return 'Please enter a valid email address!';
+    }
+
+    if (formData.password && formData.password.length < 6) {
+      return 'Password must be at least 6 characters long!';
+    }
+
+    if (isSignUp && !formData.username) {
+      return 'Username is required for sign up!';
+    }
+
+    if (isSignUp && formData.username && formData.username.length < 3) {
+      return 'Username must be at least 3 characters long!';
+    }
+
+    return null;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.email || !formData.password) {
-      toast.error('Email and password are required!');
+    const validationError = validateForm();
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
 
-    if (isSignUp && !formData.username) {
-      toast.error('Username is required for sign up!');
+    // Check connection before proceeding
+    if (authState.connectionStatus && !authState.connectionStatus.connected) {
+      toast.error('Database connection failed. Please check your configuration.');
       return;
     }
 
@@ -38,13 +70,34 @@ export function AuthForm() {
       let result;
       
       if (isSignUp) {
-        result = await signUp(formData.email, formData.password, formData.username, formData.fullName);
+        // Real-time signup with immediate database storage
+        result = await signUp(
+          formData.email.trim().toLowerCase(), 
+          formData.password, 
+          formData.username.trim().toLowerCase(), 
+          formData.fullName.trim()
+        );
       } else {
-        result = await signIn(formData.email, formData.password);
+        // Real-time signin with database validation
+        result = await signIn(
+          formData.email.trim().toLowerCase(), 
+          formData.password
+        );
       }
 
       if (result.success) {
-        toast.success(isSignUp ? 'Account created successfully!' : 'Welcome back!');
+        toast.success(
+          isSignUp 
+            ? 'Account created successfully! Welcome to scrum0.dev!' 
+            : 'Welcome back! Signed in successfully!'
+        );
+        // Clear form on success
+        setFormData({
+          email: '',
+          password: '',
+          username: '',
+          fullName: '',
+        });
       } else {
         toast.error(result.error || 'Authentication failed');
       }
@@ -55,6 +108,50 @@ export function AuthForm() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Connection status indicator
+  const ConnectionStatus = () => {
+    if (!authState.connectionStatus) return null;
+
+    const { connected, configured } = authState.connectionStatus;
+
+    if (!configured) {
+      return (
+        <div className="neo-card bg-yellow-100 border-yellow-500 p-4 mb-4">
+          <div className="flex items-center">
+            <AlertCircle className="w-5 h-5 text-yellow-600 mr-2" />
+            <p className="text-yellow-800 font-bold text-sm uppercase">
+              DEMO MODE - Supabase not configured
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    if (!connected) {
+      return (
+        <div className="neo-card bg-red-100 border-red-500 p-4 mb-4">
+          <div className="flex items-center">
+            <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
+            <p className="text-red-800 font-bold text-sm uppercase">
+              DATABASE CONNECTION FAILED
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="neo-card bg-green-100 border-green-500 p-4 mb-4">
+        <div className="flex items-center">
+          <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+          <p className="text-green-800 font-bold text-sm uppercase">
+            DATABASE CONNECTED
+          </p>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -83,6 +180,8 @@ export function AuthForm() {
         </NeoCardHeader>
 
         <NeoCardContent>
+          <ConnectionStatus />
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {isSignUp && (
               <>
@@ -99,6 +198,7 @@ export function AuthForm() {
                     onChange={(e) => handleInputChange('username', e.target.value)}
                     className="neo-input font-bold uppercase"
                     required={isSignUp}
+                    minLength={3}
                   />
                 </div>
 
@@ -148,6 +248,7 @@ export function AuthForm() {
                   onChange={(e) => handleInputChange('password', e.target.value)}
                   className="neo-input font-bold pr-12"
                   required
+                  minLength={6}
                 />
                 <button
                   type="button"
@@ -171,7 +272,7 @@ export function AuthForm() {
               type="submit"
               size="lg"
               className="w-full"
-              disabled={authState.loading}
+              disabled={authState.loading || (authState.connectionStatus && !authState.connectionStatus.connected)}
             >
               {authState.loading ? 'PROCESSING...' : (isSignUp ? 'CREATE ACCOUNT' : 'SIGN IN')}
             </NeoButton>
@@ -179,7 +280,15 @@ export function AuthForm() {
             <div className="text-center">
               <button
                 type="button"
-                onClick={() => setIsSignUp(!isSignUp)}
+                onClick={() => {
+                  setIsSignUp(!isSignUp);
+                  setFormData({
+                    email: '',
+                    password: '',
+                    username: '',
+                    fullName: '',
+                  });
+                }}
                 className="text-sm font-bold uppercase tracking-wide hover:underline"
               >
                 {isSignUp 

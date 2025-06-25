@@ -2,7 +2,7 @@
 
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User as SupabaseUser } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { supabaseClient } from '@/lib/supabase';
 import { authService, User, AuthState } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 
@@ -12,12 +12,19 @@ const AuthContext = createContext<{
   signUp: (email: string, password: string, username: string, fullName?: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  checkConnection: () => Promise<void>;
 }>({
-  authState: { user: null, loading: true, error: null },
+  authState: { 
+    user: null, 
+    loading: true, 
+    error: null,
+    connectionStatus: null,
+  },
   signIn: async () => ({ success: false }),
   signUp: async () => ({ success: false }),
   signOut: async () => {},
   refreshUser: async () => {},
+  checkConnection: async () => {},
 });
 
 export const useAuth = () => {
@@ -33,14 +40,40 @@ export const useAuthState = () => {
     user: null,
     loading: true,
     error: null,
+    connectionStatus: null,
   });
+
+  // Check Supabase connection
+  const checkConnection = async () => {
+    try {
+      const connectionStatus = await authService.checkConnection();
+      setAuthState(prev => ({ ...prev, connectionStatus }));
+      
+      if (!connectionStatus.connected) {
+        logger.error('Supabase connection failed', connectionStatus);
+        setAuthState(prev => ({ 
+          ...prev, 
+          error: connectionStatus.error || 'Database connection failed',
+          loading: false 
+        }));
+      }
+    } catch (error: any) {
+      logger.error('Connection check failed', { error: error.message });
+      setAuthState(prev => ({ 
+        ...prev, 
+        error: 'Failed to check database connection',
+        loading: false 
+      }));
+    }
+  };
 
   const fetchUserProfile = async (supabaseUser: SupabaseUser) => {
     try {
       // Check if Supabase is properly configured
-      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+      if (!supabaseClient.isConfigured()) {
         logger.warn('Supabase not configured - using mock user');
-        setAuthState({
+        setAuthState(prev => ({
+          ...prev,
           user: {
             id: supabaseUser.id,
             email: supabaseUser.email || 'demo@scrum0.dev',
@@ -51,7 +84,7 @@ export const useAuthState = () => {
           },
           loading: false,
           error: null,
-        });
+        }));
         return;
       }
 
@@ -59,38 +92,65 @@ export const useAuthState = () => {
       
       if (error) {
         logger.error('Failed to fetch user profile', { error: error.message });
-        setAuthState(prev => ({ ...prev, error: 'Failed to load user profile', loading: false }));
+        setAuthState(prev => ({ 
+          ...prev, 
+          error: 'Failed to load user profile', 
+          loading: false 
+        }));
         return;
       }
 
-      setAuthState({
+      setAuthState(prev => ({
+        ...prev,
         user: profile,
         loading: false,
         error: null,
-      });
+      }));
+
     } catch (error: any) {
       logger.error('Error fetching user profile', { error: error.message });
-      setAuthState(prev => ({ ...prev, error: error.message, loading: false }));
+      setAuthState(prev => ({ 
+        ...prev, 
+        error: error.message, 
+        loading: false 
+      }));
     }
   };
 
   const refreshUser = async () => {
     try {
+      setAuthState(prev => ({ ...prev, loading: true }));
+      
       const { session, error } = await authService.getSession();
       
       if (error) {
-        setAuthState({ user: null, loading: false, error: error.message });
+        setAuthState(prev => ({ 
+          ...prev, 
+          user: null, 
+          loading: false, 
+          error: error.message 
+        }));
         return;
       }
 
       if (session?.user) {
         await fetchUserProfile(session.user);
       } else {
-        setAuthState({ user: null, loading: false, error: null });
+        setAuthState(prev => ({ 
+          ...prev, 
+          user: null, 
+          loading: false, 
+          error: null 
+        }));
       }
     } catch (error: any) {
       logger.error('Error refreshing user', { error: error.message });
-      setAuthState({ user: null, loading: false, error: error.message });
+      setAuthState(prev => ({ 
+        ...prev, 
+        user: null, 
+        loading: false, 
+        error: error.message 
+      }));
     }
   };
 
@@ -98,9 +158,10 @@ export const useAuthState = () => {
     setAuthState(prev => ({ ...prev, loading: true, error: null }));
     
     // Check if Supabase is configured
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+    if (!supabaseClient.isConfigured()) {
       logger.warn('Supabase not configured - using demo mode');
-      setAuthState({
+      setAuthState(prev => ({
+        ...prev,
         user: {
           id: 'demo-user-id',
           email: email,
@@ -111,14 +172,18 @@ export const useAuthState = () => {
         },
         loading: false,
         error: null,
-      });
+      }));
       return { success: true };
     }
 
     const { data, error } = await authService.signIn(email, password);
     
     if (error) {
-      setAuthState(prev => ({ ...prev, loading: false, error: error.message }));
+      setAuthState(prev => ({ 
+        ...prev, 
+        loading: false, 
+        error: error.message 
+      }));
       return { success: false, error: error.message };
     }
 
@@ -133,9 +198,10 @@ export const useAuthState = () => {
     setAuthState(prev => ({ ...prev, loading: true, error: null }));
     
     // Check if Supabase is configured
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+    if (!supabaseClient.isConfigured()) {
       logger.warn('Supabase not configured - using demo mode');
-      setAuthState({
+      setAuthState(prev => ({
+        ...prev,
         user: {
           id: 'demo-user-id',
           email: email,
@@ -146,14 +212,18 @@ export const useAuthState = () => {
         },
         loading: false,
         error: null,
-      });
+      }));
       return { success: true };
     }
 
     const { data, error } = await authService.signUp(email, password, username, fullName);
     
     if (error) {
-      setAuthState(prev => ({ ...prev, loading: false, error: error.message }));
+      setAuthState(prev => ({ 
+        ...prev, 
+        loading: false, 
+        error: error.message 
+      }));
       return { success: false, error: error.message };
     }
 
@@ -168,22 +238,35 @@ export const useAuthState = () => {
     setAuthState(prev => ({ ...prev, loading: true }));
     
     await authService.signOut();
-    setAuthState({ user: null, loading: false, error: null });
+    setAuthState(prev => ({ 
+      ...prev, 
+      user: null, 
+      loading: false, 
+      error: null 
+    }));
   };
 
   useEffect(() => {
+    // Check connection first
+    checkConnection();
+
     // Get initial session
     refreshUser();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    // Listen for auth changes with real-time updates
+    const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(
       async (event, session) => {
         logger.info('Auth state changed', { event, userId: session?.user?.id });
         
         if (session?.user) {
           await fetchUserProfile(session.user);
         } else {
-          setAuthState({ user: null, loading: false, error: null });
+          setAuthState(prev => ({ 
+            ...prev, 
+            user: null, 
+            loading: false, 
+            error: null 
+          }));
         }
       }
     );
@@ -199,6 +282,7 @@ export const useAuthState = () => {
     signUp,
     signOut,
     refreshUser,
+    checkConnection,
   };
 };
 
